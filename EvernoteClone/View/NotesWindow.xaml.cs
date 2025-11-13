@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,6 +41,24 @@ namespace EvernoteClone.View
         private void boldButton_Click(object sender, RoutedEventArgs e)
         {
             contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Bold);
+        }
+
+        private async void speechButton_Click(object sender, RoutedEventArgs e)
+        {
+            string region = "australiaeast";
+            string key = "Azure kye should be used";
+
+            var speechConfig = SpeechConfig.FromSubscription(key, region);
+            using(var audioConfig = AudioConfig.FromDefaultMicrophoneInput())
+            {
+                using (var recognizer = new SpeechRecognizer(speechConfig, audioConfig))
+                {
+                    var result = await recognizer.RecognizeOnceAsync();
+                    contentRichTextBox.Document.Blocks.Add(new Paragraph(new Run(result.Text)));
+                }
+            }
+            
+
         }
     }
 }
